@@ -189,7 +189,7 @@ def error_estimation_and_decision(n, Alice_bits_after_discarding, Bob_bits_after
         if Alice_bits_after_discarding[i] != Bob_bits_after_discarding[i]:
             bit_error_count = bit_error_count + 1
     error_percent = bit_error_count/len(l)
-    if error_percent > n:
+    if error_percent > 0.25:
         decision = "Eve has intercepted the communication. So ABORT the protocol."
     else:
         decision = "Eve has NOT intercepted the communication. So DO NOT ABORT the protocol."
