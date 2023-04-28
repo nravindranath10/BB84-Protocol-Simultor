@@ -161,14 +161,14 @@ def Bob_recieves_qubits_from_Eve_and_measures(basis_Bob, psi_Eve):
     return Bob_measurement_outcomes
 
 
-def discarding_bits_after_Alice_announces_her_basis(a, b, Bob_measurement_outcomes):
+def discarding_bits_after_Alice_announces_her_basis(Alice_string, Alice_basis, basis_Bob, Bob_measurement_outcomes):
     indices_of_the_bits_not_discarded = []
     Alice_bits_after_discarding = []
     Bob_bits_after_discarding = []
-    for i in range(len(b)):
-        if b[i] == Bob_measurement_outcomes[i]:
+    for i in range(len(Alice_basis)):
+        if Alice_basis[i] == basis_Bob[i]:
             indices_of_the_bits_not_discarded.append(i)
-            Alice_bits_after_discarding.append(a[i])
+            Alice_bits_after_discarding.append(Alice_string[i])
             Bob_bits_after_discarding.append(Bob_measurement_outcomes[i])
     return indices_of_the_bits_not_discarded, Alice_bits_after_discarding, Bob_bits_after_discarding
 
@@ -209,7 +209,7 @@ basis_Bob = get_Bob_basis(n)
 
 Bob_measurement_outcomes = Bob_recieves_qubits_from_Eve_and_measures(basis_Bob, psi_Eve)
 
-indices_of_the_bits_not_discarded, Alice_bits_after_discarding, Bob_bits_after_discarding = discarding_bits_after_Alice_announces_her_basis(Alice_string, Alice_basis, Bob_measurement_outcomes)
+indices_of_the_bits_not_discarded, Alice_bits_after_discarding, Bob_bits_after_discarding = discarding_bits_after_Alice_announces_her_basis(Alice_string, Alice_basis, basis_Bob, Bob_measurement_outcomes)
 
 decision = error_estimation_and_decision(n, Alice_bits_after_discarding, Bob_bits_after_discarding)
 
