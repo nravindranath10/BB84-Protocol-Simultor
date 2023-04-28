@@ -88,9 +88,9 @@ def measure_a_state_computational_basis(psi):
         measurement_outcome = 1
         psi_after_measurement = psi_after_measurement_state2
     '''
-    elements = [0, 1]
+    outcomes = [0, 1]
     probabilities = [probability_of_state1, probability_of_state2]
-    measurement_outcome = np.random.choice(elements, 1, p=probabilities)
+    measurement_outcome = np.random.choice(outcomes, 1, p=probabilities)
     return measurement_outcome
 
 
@@ -131,9 +131,9 @@ def measure_a_state_hadamard_basis(psi):
         measurement_outcome = 1
         psi_after_measurement = psi_after_measurement_state2
     '''
-    elements = [0, 1]
+    outcomes = [0, 1]
     probabilities = [probability_of_state1, probability_of_state2]
-    measurement_outcome = np.random.choice(elements, 1, p=probabilities)
+    measurement_outcome = np.random.choice(outcomes, 1, p=probabilities)
 
     return measurement_outcome
 
