@@ -80,13 +80,17 @@ def measure_a_state_computational_basis(psi):
         psi_after_measurement_state2 = [x*(1/psi_after_measurement_state2_denominator) for x in psi_after_measurement_state2_numerator]
     else:
         psi_after_measurement_state1 = psi_after_measurement_state2_numerator
-
+    '''
     if (np.random.rand() < probability_of_state1):
         measurement_outcome = 0
         psi_after_measurement = psi_after_measurement_state1
     else:
         measurement_outcome = 1
-        psi_after_measurement = psi_after_measurement_state2    
+        psi_after_measurement = psi_after_measurement_state2
+    '''
+    elements = [0, 1]
+    probabilities = [probability_of_state1, probability_of_state2]
+    measurement_outcome = np.random.choice(elements, 1, p=probabilities)
     return measurement_outcome
 
 
@@ -119,13 +123,18 @@ def measure_a_state_hadamard_basis(psi):
         psi_after_measurement_state2 = [x*(1/psi_after_measurement_state2_denominator) for x in psi_after_measurement_state2_numerator]
     else:
         psi_after_measurement_state2 = psi_after_measurement_state2_numerator
-    
+    '''
     if (np.random.rand() < probability_of_state1):
         measurement_outcome = 0
         psi_after_measurement = psi_after_measurement_state1
     else:
         measurement_outcome = 1
         psi_after_measurement = psi_after_measurement_state2
+    '''
+    elements = [0, 1]
+    probabilities = [probability_of_state1, probability_of_state2]
+    measurement_outcome = np.random.choice(elements, 1, p=probabilities)
+
     return measurement_outcome
 
 
@@ -189,7 +198,7 @@ def error_estimation_and_decision(n, Alice_bits_after_discarding, Bob_bits_after
 
 #main
 
-n = 3
+n = 5
 
 Alice_string = np.random.randint(2, size=4*n)
 
