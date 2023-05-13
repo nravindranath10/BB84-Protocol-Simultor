@@ -7,6 +7,7 @@ Created on Fri Apr 28 18:51:22 2023
 
 import numpy as np
 
+from random import sample
 
 def get_basis_states():
     psi_00 = [1,0]
@@ -79,7 +80,7 @@ def measure_a_state_computational_basis(psi):
     if psi_after_measurement_state2_denominator != 0:
         psi_after_measurement_state2 = [x*(1/psi_after_measurement_state2_denominator) for x in psi_after_measurement_state2_numerator]
     else:
-        psi_after_measurement_state1 = psi_after_measurement_state2_numerator
+        psi_after_measurement_state2 = psi_after_measurement_state2_numerator
     '''
     if (np.random.rand() < probability_of_state1):
         measurement_outcome = 0
@@ -89,9 +90,13 @@ def measure_a_state_computational_basis(psi):
         psi_after_measurement = psi_after_measurement_state2
     '''
     outcomes = [0, 1]
-    probabilities = [probability_of_state1, probability_of_state2]
+    probabilities = [probability_of_state1,1-probability_of_state1]
     measurement_outcome = np.random.choice(outcomes, 1, p=probabilities)
-    return measurement_outcome
+    if measurement_outcome == 0:
+        psi_after_measurement = psi_after_measurement_state1
+    else:
+        psi_after_measurement = psi_after_measurement_state2
+    return [measurement_outcome, psi_after_measurement]
 
 
 def measure_a_state_hadamard_basis(psi):
@@ -132,10 +137,14 @@ def measure_a_state_hadamard_basis(psi):
         psi_after_measurement = psi_after_measurement_state2
     '''
     outcomes = [0, 1]
-    probabilities = [probability_of_state1, probability_of_state2]
+    probabilities = [probability_of_state1, 1-probability_of_state1]
     measurement_outcome = np.random.choice(outcomes, 1, p=probabilities)
+    if measurement_outcome == 0:
+        psi_after_measurement = psi_after_measurement_state1
+    else:
+        psi_after_measurement = psi_after_measurement_state2
 
-    return measurement_outcome
+    return [measurement_outcome, psi_after_measurement]
 
 
 def get_Bob_basis(n):
@@ -159,14 +168,28 @@ def get_Bob_basis_states(Alice_string):
     return psi_Bob
 
 
-def Bob_recieves_qubits_from_Eve_and_measures(basis_Bob, psi_Eve):
+def Eve_measures_and_resends_to_Bob(psi_Eve):
+    lst = range(4*n)
+    random_subset_computational = sample(lst, 2*n)
+    random_subset_hadamard = [elem for elem in lst if elem not in random_subset_computational]
+    psi_Eve_measured = []
+    for i in range(len(psi_Eve)):
+        psi_Eve = np.array(psi_Eve)
+        if i in random_subset_computational:
+            psi_Eve_measured.append(measure_a_state_computational_basis(psi_Eve[i])[1])
+        else:
+            psi_Eve_measured.append(measure_a_state_hadamard_basis(psi_Eve[i])[1])
+    return psi_Eve_measured
+
+
+def Bob_recieves_qubits_from_Eve_and_measures(basis_Bob, psi_Eve_measured):
     Bob_measurement_outcomes = []
     for i in range(len(basis_Bob)):
-        psi_Eve = np.array(psi_Eve)
+        psi_Eve_measured = np.array(psi_Eve_measured)
         if basis_Bob[i] == 0:
-            Bob_measurement_outcomes.append(measure_a_state_computational_basis(psi_Eve[i]))
+            Bob_measurement_outcomes.append(measure_a_state_computational_basis(psi_Eve_measured[i])[0])
         else:
-            Bob_measurement_outcomes.append(measure_a_state_hadamard_basis(psi_Eve[i]))
+            Bob_measurement_outcomes.append(measure_a_state_hadamard_basis(psi_Eve_measured[i])[0])
     return Bob_measurement_outcomes
 
 
@@ -214,9 +237,11 @@ psi_Alice = get_Alice_basis_states(Alice_string, Alice_basis)
 
 psi_Eve = get_Eve_basis_states(Alice_string, n)
 
+psi_Eve_measured = Eve_measures_and_resends_to_Bob(psi_Eve)
+
 basis_Bob = get_Bob_basis(n)
 
-Bob_measurement_outcomes = Bob_recieves_qubits_from_Eve_and_measures(basis_Bob, psi_Eve)
+Bob_measurement_outcomes = Bob_recieves_qubits_from_Eve_and_measures(basis_Bob, psi_Eve_measured)
 
 indices_of_the_bits_not_discarded, Alice_bits_after_discarding, Bob_bits_after_discarding = discarding_bits_after_Alice_announces_her_basis(Alice_string, Alice_basis, basis_Bob, Bob_measurement_outcomes)
 
